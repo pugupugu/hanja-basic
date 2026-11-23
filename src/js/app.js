@@ -67,8 +67,9 @@ const wordsOf = (ch) => WORDS.filter((w) => w.h.includes(ch));
 /* ---------- 라우터 ---------- */
 const app = $("#app");
 let route = "home", arg = null;
-function go(r) { location.hash = "#/" + r; }
-function parseHash() { const p = location.hash.replace(/^#\//, "").split("/"); route = p[0] || "home"; arg = p[1] || null; }
+let cur = null; // 주소창(hash)을 못 쓰는 미리보기·샌드박스에서도 화면 이동이 되도록 현재 경로를 직접 들고 있는다
+function go(r) { cur = r; try { history.replaceState(null, "", "#/" + r); } catch (e) { /* 무시 */ } render(); }
+function parseHash() { let raw = cur; if (raw === null) { try { raw = location.hash.replace("#/", ""); } catch (e) { raw = ""; } } const p = raw.split("/"); route = p[0] || "home"; arg = p[1] || null; }
 function render() {
   parseHash(); touchDay(); closeModal();
   document.querySelectorAll("[data-nav]").forEach((a) => a.classList.toggle("on", a.dataset.nav === route || (route === "cards" && a.dataset.nav === "learn") || (route === "play" && a.dataset.nav === "quiz")));
@@ -77,7 +78,7 @@ function render() {
   window.scrollTo(0, 0);
   if (route === "match") matchInit();
 }
-window.addEventListener("hashchange", render);
+window.addEventListener("hashchange", () => { cur = null; render(); });
 
 /* ---------- 홈 ---------- */
 function viewHome() {
@@ -218,7 +219,7 @@ const MODES = [
 ];
 let QS = { mode: "hun", scope: "all" };
 function viewQuizMenu() {
-  if (arg === "auto") { QS.mode = "hun"; QS.scope = String(nextLevel()); startQuiz(); return ""; }
+  if (arg === "auto") { QS.mode = "hun"; QS.scope = String(nextLevel()); setTimeout(startQuiz, 0); return ""; }
   return `
   <div class="head"><h1>퀴즈</h1><p>종류와 범위를 고르고 시작! 10문제를 풀면 별을 받아요.</p></div>
   <h2 class="sec">종류</h2>
@@ -250,8 +251,7 @@ function startQuiz() {
       for (const o of shuffle(base)) { if (opts.length >= 4) break; if (!opts.some((p) => key(p) === key(o))) opts.push(o); }
       return { it, opts: shuffle(opts) };
     }) };
-  location.hash = "#/play";
-  if (route === "play") render();
+  go("play");
 }
 function viewPlay() {
   if (!Q) return viewQuizMenu();
@@ -408,4 +408,4 @@ document.addEventListener("click", (e) => {
 });
 document.addEventListener("input", (e) => { if (e.target.dataset.act === "numin") $("#numout").innerHTML = numOut(Number(e.target.value)); });
 document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeModal(); });
-if (!location.hash) location.hash = "#/home"; else render();
+try { render(); } catch (e) { app.innerHTML = `<div class="card"><b>화면을 불러오지 못했어요.</b><p class="tiny">${e.message}</p></div>`; }
