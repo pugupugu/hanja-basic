@@ -379,6 +379,9 @@ function viewMe() {
 
 /* ---------- 이벤트 ---------- */
 document.addEventListener("click", (e) => {
+  // 아티팩트·미리보기에서는 #링크가 막힐 수 있어 앱이 직접 화면을 바꾼다
+  const link = e.target.closest('a[href^="#/"]');
+  if (link) { e.preventDefault(); go(link.getAttribute("href").slice(2)); return; }
   const el = e.target.closest("[data-act]"); if (!el) return;
   const a = el.dataset.act;
   if (a === "go") go(el.dataset.to);
