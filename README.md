@@ -7,9 +7,9 @@
 - 학습 기록은 각자 브라우저(localStorage)에만 저장된다.
 
 ## 수정 방법
-- 한자·단어·사자성어: `js/data.js` (줄 형식은 파일 맨 위 주석 참고)
-- 화면: `css/style.css`, `js/app.js`
-- 로컬 확인: `index.html`을 정적 서버로 열기 (예: `npx serve`)
+- 한자·단어·사자성어: `src/js/data.js` (줄 형식은 파일 맨 위 주석 참고)
+- 소스는 `src/`(data.js·app.js·style.css)에 있고, 수정 후 `node scripts/build.mjs`로 단일 `index.html`을 다시 만들어 함께 커밋한다.
+- 확인: 만들어진 `index.html`을 그냥 열면 된다 (서버 불필요).
 
 ## 배포
 main에 push하면 GitHub Actions가 Pages로 배포한다.

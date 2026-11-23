@@ -6,7 +6,170 @@
 <title>한자 놀이터 - 어린이 초급 한자</title>
 <meta name="description" content="아이와 함께 퀴즈와 게임으로 배우는 초급 한자 300자, 한자 단어, 사자성어">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='24' fill='%23d9482b'/%3E%3Ctext x='50' y='72' font-size='64' text-anchor='middle' fill='white'%3E漢%3C/text%3E%3C/svg%3E">
-<link rel="stylesheet" href="css/style.css">
+<style>
+:root{
+  --bg:#fbf7f0; --card:#fff; --ink:#2b2a33; --mute:#7a7684; --line:#ece5d8;
+  --red:#d9482b; --red-d:#b93a20; --teal:#2a9d8f; --gold:#f4b942; --soft:#fdeee9; --ok:#e3f6ee; --bad:#fde8e6;
+  --r:20px; --sh:0 6px 20px rgba(60,40,20,.07);
+  --hanja:"Noto Serif KR","Noto Serif CJK KR","Batang","Songti SC","SimSun",serif;
+  --sans:"Pretendard","Noto Sans KR","Malgun Gothic","Apple SD Gothic Neo",system-ui,sans-serif;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.5;padding-bottom:84px}
+h1,h2,h3,p{margin:0}
+button{font:inherit;color:inherit;cursor:pointer;border:0;background:none}
+.wrap{max-width:860px;margin:0 auto;padding:20px 16px 40px;display:flex;flex-direction:column;gap:16px}
+
+/* 헤더 / 내비 */
+.top{position:sticky;top:0;z-index:20;background:rgba(251,247,240,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:10px 16px;max-width:none}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--ink);font-size:18px}
+.logo{width:36px;height:36px;border-radius:11px;background:var(--red);color:#fff;display:grid;place-items:center;font:700 22px var(--hanja)}
+.nav{display:flex;gap:4px}
+.nav a{display:flex;flex-direction:column;align-items:center;text-decoration:none;color:var(--mute);font-size:18px;padding:6px 10px;border-radius:12px;line-height:1.2}
+.nav a span{font-size:11px;font-weight:600}
+.nav a.on{background:var(--soft);color:var(--red)}
+@media(max-width:720px){
+  .top{justify-content:center;padding:8px 16px}
+  .brand{display:none}
+  .nav{position:fixed;left:0;right:0;bottom:0;background:#fff;border-top:1px solid var(--line);justify-content:space-around;padding:6px 4px calc(6px + env(safe-area-inset-bottom));z-index:30}
+  .top{position:static;border:0;background:none;padding:0;height:0}
+  body{padding-top:0}
+}
+
+/* 공통 컴포넌트 */
+.card{background:var(--card);border-radius:var(--r);box-shadow:var(--sh);padding:20px;border:1px solid var(--line)}
+.eyebrow{font-size:13px;font-weight:700;color:var(--red);margin-bottom:6px}
+.tiny{font-size:13px;color:var(--mute)}
+.head h1{font-size:26px}.head p{color:var(--mute);margin-top:4px}
+.head small{font-size:15px;color:var(--mute);font-weight:500}
+.sec{font-size:18px;margin-top:6px}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.row.between{justify-content:space-between}.row.center{justify-content:center}.row.sp{margin-top:6px}
+.stack{display:flex;flex-direction:column;gap:10px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:14px}
+@media(max-width:600px){.grid2{grid-template-columns:1fr}}
+.btn{padding:12px 18px;border-radius:14px;background:#fff;border:1.5px solid var(--line);font-weight:700;transition:.15s;box-shadow:0 2px 0 var(--line)}
+.btn:hover{transform:translateY(-1px)}.btn:active{transform:translateY(1px);box-shadow:none}
+.btn.primary{background:var(--red);border-color:var(--red-d);color:#fff;box-shadow:0 3px 0 var(--red-d)}
+.btn.ok{background:var(--ok);border-color:var(--teal);color:#14705f}
+.btn.small{padding:8px 14px;font-size:14px;border-radius:12px}
+.btn.big{padding:16px 36px;font-size:18px}
+.btn.wide{width:100%;text-align:left}
+.btn.danger{color:#b3261e;border-color:#f1c6c2}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{padding:8px 14px;border-radius:999px;background:#fff;border:1.5px solid var(--line);font-weight:600;font-size:14px}
+.chip.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.bar{height:8px;border-radius:99px;background:var(--line);overflow:hidden}
+.bar.big{height:12px}
+.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--gold),var(--red));border-radius:99px;transition:width .4s}
+.notice{font-size:13px;color:var(--mute);text-align:center;margin-top:8px}
+.big-h{font:700 96px/1.1 var(--hanja);text-align:center;margin:6px 0}
+.big-h.xl{font-size:130px}
+.big-w{font:700 34px var(--hanja)}.big-w.xl{font-size:56px;text-align:center}
+.kor{font-size:22px;font-weight:700;text-align:center}.kor.xl{font-size:34px}
+.big-e{font-size:56px;text-align:center}
+.center-box{text-align:center;display:flex;flex-direction:column;gap:12px;align-items:center;padding:32px 20px}
+.w{display:flex;gap:10px;align-items:baseline;padding:6px 0;border-bottom:1px dashed var(--line);flex-wrap:wrap}
+.w b{font:700 20px var(--hanja)}.w span{font-weight:700;color:var(--red)}.w em{font-style:normal;color:var(--mute);font-size:13px}
+
+/* 홈 */
+.hero{display:flex;gap:20px;align-items:center;justify-content:space-between;background:linear-gradient(135deg,#fff,#fff3ec)}
+.hero h1{font-size:28px;margin:6px 0 16px;line-height:1.35}
+.hero-r{text-align:center;display:flex;flex-direction:column;align-items:center}
+@media(max-width:600px){.hero{flex-direction:column-reverse;text-align:center}.hero .row{justify-content:center}}
+.ring-bg{fill:none;stroke:var(--line);stroke-width:10}
+.ring-fg{fill:none;stroke:var(--red);stroke-width:10;stroke-linecap:round;transition:stroke-dashoffset .6s}
+.ring-t{font:800 20px var(--sans);fill:var(--ink)}
+.daily{cursor:pointer;text-align:center}.daily:hover{border-color:var(--red)}
+.lvl,.pick{text-align:left;display:flex;flex-direction:column;gap:6px;transition:.15s}
+.lvl:hover,.pick:hover{transform:translateY(-2px);border-color:var(--red)}
+.pick.on{border-color:var(--red);background:var(--soft)}
+.lvl-e{font-size:30px}
+
+/* 한자 타일 */
+.tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(88px,1fr));gap:10px}
+.tile{background:#fff;border:1.5px solid var(--line);border-radius:16px;padding:10px 4px;display:flex;flex-direction:column;align-items:center;box-shadow:0 2px 0 var(--line);position:relative;transition:.12s}
+.tile:hover{transform:translateY(-2px);border-color:var(--red)}
+.tile .th{font:700 38px/1.2 var(--hanja)}
+.tile .tk{font-size:12px;font-weight:600}.tile .ts{font-size:12px;color:var(--mute)}
+.tile.known{background:var(--ok);border-color:#9fdcc9}
+.tile.known::after{content:"✓";position:absolute;top:4px;right:8px;color:var(--teal);font-weight:800;font-size:13px}
+
+/* 모달 */
+#modal{position:fixed;inset:0;z-index:50;display:grid;place-items:center;padding:16px}
+.scrim{position:absolute;inset:0;background:rgba(30,20,10,.45)}
+.sheet{position:relative;width:min(480px,100%);max-height:92vh;overflow:auto;display:flex;flex-direction:column;gap:10px;animation:pop .2s}
+.sheet h3{font-size:15px;margin-top:6px}
+.x{position:absolute;top:12px;right:14px;font-size:18px;color:var(--mute)}
+@keyframes pop{from{transform:scale(.94);opacity:0}}
+
+/* 카드 학습 */
+.flash{perspective:1000px;height:330px;cursor:pointer;position:relative}
+.face{position:absolute;inset:0;background:#fff;border:1px solid var(--line);border-radius:28px;box-shadow:var(--sh);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:16px;backface-visibility:hidden;transition:transform .5s}
+.face.back{transform:rotateY(180deg);background:linear-gradient(135deg,#fff,#fff3ec)}
+.flash.flip .front{transform:rotateY(-180deg)}.flash.flip .back{transform:rotateY(0)}
+
+/* 목록 */
+.list{display:flex;flex-direction:column;gap:10px}
+.item{display:flex;align-items:center;gap:16px;background:#fff;border:1px solid var(--line);border-radius:18px;padding:14px 18px;box-shadow:var(--sh);cursor:pointer}
+.item .big-w{min-width:112px}.item.idiom .big-w{min-width:160px;font-size:28px}
+.info{display:flex;flex-direction:column;flex:1}.info b{color:var(--red);font-size:18px}.info span{color:var(--mute);font-size:14px}
+.item.hidden .info{filter:blur(7px);user-select:none}
+.icon{font-size:20px;padding:6px}
+.switch{display:flex;gap:8px;align-items:center;font-weight:600;font-size:14px}
+@media(max-width:560px){.item{flex-wrap:wrap}.item .big-w,.item.idiom .big-w{min-width:0}}
+
+/* 퀴즈 */
+.qcard{text-align:center;min-height:200px;display:flex;flex-direction:column;justify-content:center;gap:10px}
+.ask{color:var(--mute);font-weight:600}.mean{font-size:22px;font-weight:700;line-height:1.5}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.opt{background:#fff;border:2px solid var(--line);border-radius:18px;padding:18px 10px;font-size:20px;font-weight:700;box-shadow:0 3px 0 var(--line);transition:.12s}
+.opt:hover:not(:disabled){border-color:var(--red);transform:translateY(-1px)}
+.opt.right{background:var(--ok);border-color:var(--teal)}.opt.bad{background:var(--bad);border-color:#e57a70;animation:shake .4s}
+.hanja-opt .opt{font:700 40px var(--hanja);padding:16px 8px}
+.hanja-opt.idiom-opt .opt{font-size:30px;display:flex;flex-direction:column;gap:0}
+.opt small{font:500 13px var(--sans);color:var(--mute)}
+@media(max-width:480px){.opts{grid-template-columns:1fr}.hanja-opt{grid-template-columns:1fr 1fr}}
+.fb{display:flex;gap:12px;align-items:center;flex-wrap:wrap;padding:14px 16px;border-radius:16px;margin-top:4px}
+.fb.good{background:var(--ok)}.fb.no{background:var(--bad)}.fb span{flex:1;font-weight:600}
+.stars{font-size:56px;color:var(--gold);letter-spacing:4px}.stars span{color:var(--line)}
+.wrongs{width:100%;text-align:left;background:var(--bg);border-radius:14px;padding:12px 16px}
+
+/* 짝 맞추기 */
+.mgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+@media(max-width:480px){.mgrid{grid-template-columns:repeat(3,1fr)}}
+.mt{aspect-ratio:1;background:#fff;border:2px solid var(--line);border-radius:18px;font-weight:700;box-shadow:0 3px 0 var(--line);font-size:16px;transition:.15s}
+.mt.h{font:700 40px var(--hanja);background:#fff8f2}
+.mt.sel{border-color:var(--red);background:var(--soft);transform:scale(1.04)}
+.mt.gone{opacity:0;pointer-events:none;transform:scale(.6)}
+.mt.shake{animation:shake .4s;border-color:#e57a70}
+.prow{display:grid;grid-template-columns:90px 1fr 56px;gap:10px;align-items:center;margin:8px 0}
+@keyframes shake{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+
+/* 효과 */
+.toast{position:fixed;left:50%;bottom:100px;transform:translateX(-50%);background:var(--ink);color:#fff;padding:12px 20px;border-radius:99px;z-index:90;font-weight:600;animation:pop .2s}
+.confetti{position:fixed;top:-30px;z-index:80;pointer-events:none;animation:fall 2.6s linear forwards}
+@keyframes fall{to{transform:translateY(110vh) rotate(540deg)}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+/* 기초 다지기 */
+.start{display:flex;align-items:center;gap:14px;text-align:left;background:linear-gradient(135deg,#eaf7f3,#fff);border-color:#bfe6da;transition:.15s}
+.start:hover{transform:translateY(-2px)}.start .arrow{margin-left:auto;color:var(--teal)}
+.widget h3{font-size:17px}.widget{display:flex;flex-direction:column;gap:12px}
+input[type=range]{width:100%;accent-color:var(--red);height:32px}
+.wout{display:flex;align-items:center;gap:14px;justify-content:center;flex-wrap:wrap;min-height:64px;background:var(--bg);border-radius:16px;padding:10px}
+.wout .num{font:800 34px var(--sans)}.wout .eq{color:var(--mute);font-size:22px}.wout b{font-size:24px;color:var(--red)}
+.week{display:grid;grid-template-columns:repeat(7,1fr);gap:8px}
+.wd{background:#fff;border:2px solid var(--line);border-radius:14px;padding:10px 2px;display:flex;flex-direction:column;align-items:center;gap:2px;box-shadow:0 2px 0 var(--line)}
+.wd .hj{font:700 32px var(--hanja)}.wd b{font-size:12px}.wd small{font-size:11px;color:var(--mute)}
+.wd.today{background:var(--soft);border-color:var(--red)}
+.todayline{text-align:center;font-size:15px}.todayline b{font:700 18px var(--hanja)}
+.tips{margin:8px 0 0;padding-left:20px;display:flex;flex-direction:column;gap:6px}
+.chip.on{background:var(--ink);color:#fff}
+@media(max-width:720px){.nav a{padding:6px 5px;flex:1;font-size:17px}.nav a span{font-size:10px}.wd b{font-size:10px}.wd .hj{font-size:26px}}
+</style>
 </head>
 <body>
 <header class="top">
@@ -23,7 +186,925 @@
   </nav>
 </header>
 <main id="app" class="wrap"></main>
-<script src="js/data.js"></script>
-<script src="js/app.js"></script>
+<script>
+/* 한자 놀이터 - 학습 데이터
+ * 한자 줄 형식: 한자 훈 음   (한자능력검정 8급~6급 수준으로 3단계 구성)
+ * 단어 줄 형식: 한자어|독음|뜻
+ * 사자성어 줄 형식: 한자|독음|뜻
+ */
+const LEVELS = [
+  { id: 1, name: "1단계", sub: "8급 수준 · 기본 한자", emoji: "🌱" },
+  { id: 2, name: "2단계", sub: "7급 수준 · 생활 한자", emoji: "🌿" },
+  { id: 3, name: "3단계", sub: "6급 수준 · 응용 한자", emoji: "🌳" },
+];
+
+const RAW_CHARS = {
+  1: `
+校 학교 교
+敎 가르칠 교
+九 아홉 구
+國 나라 국
+軍 군사 군
+金 쇠 금
+南 남녘 남
+女 계집 녀(여)
+年 해 년(연)
+大 큰 대
+東 동녘 동
+六 여섯 륙(육)
+萬 일만 만
+母 어머니 모
+木 나무 목
+門 문 문
+民 백성 민
+白 흰 백
+父 아비 부
+北 북녘 북
+四 넉 사
+山 메 산
+三 석 삼
+生 날 생
+西 서녘 서
+先 먼저 선
+小 작을 소
+水 물 수
+室 집 실
+十 열 십
+五 다섯 오
+王 임금 왕
+外 바깥 외
+月 달 월
+二 두 이
+人 사람 인
+一 한 일
+日 날 일
+長 긴 장
+弟 아우 제
+中 가운데 중
+靑 푸를 청
+寸 마디 촌
+七 일곱 칠
+土 흙 토
+八 여덟 팔
+學 배울 학
+韓 나라 한
+火 불 화
+兄 형 형`,
+  2: `
+家 집 가
+歌 노래 가
+間 사이 간
+江 강 강
+車 수레 차(거)
+工 장인 공
+空 빌 공
+口 입 구
+氣 기운 기
+記 기록할 기
+旗 기 기
+冬 겨울 동
+同 한가지 동
+洞 골 동
+動 움직일 동
+登 오를 등
+來 올 래(내)
+力 힘 력(역)
+老 늙을 로(노)
+里 마을 리(이)
+林 수풀 림(임)
+立 설 립(입)
+每 매양 매
+面 낯 면
+名 이름 명
+命 목숨 명
+文 글월 문
+問 물을 문
+物 물건 물
+方 모 방
+百 일백 백
+夫 지아비 부
+不 아닐 불(부)
+事 일 사
+算 셈 산
+上 윗 상
+色 빛 색
+夕 저녁 석
+姓 성 성
+世 인간 세
+少 적을 소
+所 바 소
+手 손 수
+數 셈 수
+時 때 시
+市 저자 시
+食 밥 식
+植 심을 식
+心 마음 심
+語 말씀 어
+然 그럴 연
+午 낮 오
+右 오른 우
+有 있을 유
+育 기를 육
+邑 고을 읍
+入 들 입
+子 아들 자
+字 글자 자
+自 스스로 자
+場 마당 장
+全 온전 전
+前 앞 전
+電 번개 전
+正 바를 정
+祖 할아비 조
+足 발 족
+左 왼 좌
+主 임금 주
+住 살 주
+重 무거울 중
+地 땅 지
+紙 종이 지
+直 곧을 직
+千 일천 천
+天 하늘 천
+川 내 천
+草 풀 초
+村 마을 촌
+秋 가을 추
+春 봄 춘
+出 날 출
+便 편할 편
+平 평평할 평
+下 아래 하
+夏 여름 하
+漢 한수 한
+海 바다 해
+花 꽃 화
+話 말씀 화
+活 살 활
+孝 효도 효
+後 뒤 후
+休 쉴 휴
+內 안 내
+農 농사 농
+道 길 도
+男 사내 남
+安 편안 안`,
+  3: `
+角 뿔 각
+感 느낄 감
+強 강할 강
+開 열 개
+京 서울 경
+計 셀 계
+界 지경 계
+高 높을 고
+古 예 고
+功 공 공
+公 공평할 공
+共 한가지 공
+果 실과 과
+科 과목 과
+光 빛 광
+交 사귈 교
+球 공 구
+區 구분할 구
+郡 고을 군
+近 가까울 근
+根 뿌리 근
+今 이제 금
+急 급할 급
+級 등급 급
+多 많을 다
+短 짧을 단
+堂 집 당
+代 대신할 대
+對 대할 대
+圖 그림 도
+讀 읽을 독
+童 아이 동
+頭 머리 두
+等 무리 등
+樂 즐길 락(낙)
+禮 예도 례(예)
+李 오얏 리(이)
+理 다스릴 리(이)
+明 밝을 명
+目 눈 목
+米 쌀 미
+美 아름다울 미
+反 돌이킬 반
+半 반 반
+發 필 발
+放 놓을 방
+番 차례 번
+別 다를 별
+病 병 병
+服 옷 복
+本 근본 본
+部 떼 부
+分 나눌 분
+社 모일 사
+使 하여금 사
+死 죽을 사
+書 글 서
+石 돌 석
+席 자리 석
+線 줄 선
+雪 눈 설
+成 이룰 성
+省 살필 성
+消 사라질 소
+速 빠를 속
+孫 손자 손
+樹 나무 수
+習 익힐 습
+勝 이길 승
+始 비로소 시
+式 법 식
+身 몸 신
+信 믿을 신
+新 새 신
+神 귀신 신
+愛 사랑 애
+野 들 야
+夜 밤 야
+藥 약 약
+弱 약할 약
+洋 큰바다 양
+陽 볕 양
+言 말씀 언
+業 업 업
+永 길 영
+英 꽃부리 영
+溫 따뜻할 온
+勇 날랠 용
+用 쓸 용
+運 옮길 운
+遠 멀 원
+園 동산 원
+油 기름 유
+由 말미암을 유
+銀 은 은
+音 소리 음
+飮 마실 음
+衣 옷 의
+醫 의원 의
+作 지을 작
+昨 어제 작
+章 글 장
+在 있을 재
+才 재주 재
+戰 싸움 전
+庭 뜰 정
+定 정할 정
+朝 아침 조
+族 겨레 족
+晝 낮 주
+親 친할 친
+太 클 태
+通 통할 통
+特 특별할 특
+表 겉 표
+風 바람 풍
+合 합할 합
+行 다닐 행
+幸 다행 행
+向 향할 향
+現 나타날 현
+形 모양 형
+號 이름 호
+和 화할 화
+會 모일 회
+者 놈 자
+第 차례 제
+題 제목 제
+注 부을 주
+集 모을 집
+窓 창 창
+淸 맑을 청
+體 몸 체
+答 대답 답
+路 길 로(노)
+利 이로울 리(이)
+例 법식 례(예)
+失 잃을 실
+度 법도 도
+意 뜻 의`,
+};
+
+const RAW_WORDS = `
+山水|산수|산과 물, 자연의 경치
+火山|화산|땅속의 불과 용암을 뿜어내는 산
+水中|수중|물속
+年中|연중|한 해 동안
+日月|일월|해와 달
+韓國|한국|우리나라의 이름
+大韓|대한|우리나라의 옛 이름이자 국호
+學生|학생|학교에서 배우는 사람
+先生|선생|가르치는 사람
+學校|학교|배우고 가르치는 곳
+敎室|교실|학교에서 수업하는 방
+軍人|군인|군대에 속한 사람
+外國|외국|다른 나라
+國王|국왕|나라의 임금
+母國|모국|내가 태어난 나라
+父母|부모|아버지와 어머니
+兄弟|형제|형과 아우
+東西|동서|동쪽과 서쪽
+南北|남북|남쪽과 북쪽
+大門|대문|큰 문, 집의 정문
+西門|서문|서쪽에 있는 문
+三月|삼월|한 해의 셋째 달
+五月|오월|한 해의 다섯째 달
+六月|유월|한 해의 여섯째 달
+十月|시월|한 해의 열째 달
+萬人|만인|모든 사람
+萬年|만년|아주 오랜 세월
+白金|백금|흰빛이 나는 귀한 금속
+靑山|청산|푸른 산
+女王|여왕|여자 임금
+人間|인간|사람
+土木|토목|흙과 나무로 짓는 공사
+空氣|공기|지구를 둘러싼 기체, 숨 쉬는 공기
+電話|전화|멀리 떨어진 사람과 말을 주고받는 기계
+電車|전차|전기로 달리는 차
+海水|해수|바닷물
+海外|해외|바다 밖의 다른 나라
+漢字|한자|중국에서 생겨난 글자
+漢文|한문|한자로 쓴 글
+自然|자연|사람의 손이 닿지 않은 그대로의 세계
+正直|정직|거짓 없이 바르고 곧음
+休日|휴일|쉬는 날
+食口|식구|한집에서 함께 밥을 먹는 사람
+食事|식사|밥을 먹음
+花草|화초|꽃이 피는 풀과 나무
+草木|초목|풀과 나무
+天地|천지|하늘과 땅
+上下|상하|위와 아래
+左右|좌우|왼쪽과 오른쪽
+前後|전후|앞과 뒤
+出入|출입|나가고 들어감
+出口|출구|나가는 문
+入口|입구|들어가는 문
+有名|유명|이름이 널리 알려짐
+名物|명물|그 고장의 이름난 물건
+午前|오전|낮 열두 시 이전
+午後|오후|낮 열두 시 이후
+市場|시장|물건을 사고파는 곳
+工場|공장|물건을 만드는 곳
+農村|농촌|농사짓는 마을
+農夫|농부|농사짓는 사람
+平安|평안|걱정 없이 편안함
+安全|안전|위험이 없음
+手足|수족|손과 발
+生活|생활|살아가는 일
+活力|활력|살아 움직이는 힘
+動力|동력|움직이게 하는 힘
+空間|공간|아무것도 없이 빈 곳
+世上|세상|사람이 살아가는 모든 곳
+少年|소년|나이가 어린 남자아이
+少女|소녀|나이가 어린 여자아이
+數學|수학|수와 도형을 배우는 학문
+算數|산수|셈하는 공부
+名人|명인|어떤 일에 뛰어난 사람
+孝子|효자|부모를 잘 모시는 아들
+孝道|효도|부모를 잘 섬기는 도리
+家庭|가정|가족이 함께 사는 집
+地球|지구|우리가 사는 별
+交通|교통|오고 가는 길과 수단
+科學|과학|자연을 연구하는 학문
+公共|공공|여러 사람이 함께하는 것
+圖書|도서|그림과 글로 된 책
+讀書|독서|책을 읽음
+音樂|음악|소리로 표현하는 예술
+運動|운동|몸을 움직임
+衣服|의복|옷
+飮食|음식|먹고 마시는 것
+新年|신년|새해
+愛國|애국|나라를 사랑함
+現在|현재|지금
+今年|금년|올해
+昨年|작년|지난해
+明日|명일|내일
+家族|가족|한집에 사는 식구
+天才|천재|타고난 뛰어난 재주를 가진 사람
+學習|학습|배우고 익힘
+發表|발표|여러 사람 앞에 드러내어 알림
+成功|성공|목적을 이룸
+速力|속력|빠르기
+高速|고속|매우 빠른 속도
+室內|실내|방이나 건물의 안
+會社|회사|이익을 위해 모인 단체
+社會|사회|사람들이 모여 사는 집단
+風車|풍차|바람의 힘으로 돌아가는 바퀴
+太陽|태양|해
+太古|태고|아주 오랜 옛날
+銀行|은행|돈을 맡기고 빌리는 곳
+特別|특별|보통과 다름
+通行|통행|길을 지나다님
+童話|동화|어린이를 위한 이야기
+童心|동심|어린아이의 마음
+美人|미인|아름다운 사람
+洋服|양복|서양식 옷
+英語|영어|영국과 미국 등에서 쓰는 말
+作文|작문|글을 지음
+神話|신화|신에 관한 옛이야기
+生日|생일|태어난 날
+年年|연년|해마다
+每日|매일|날마다
+言語|언어|생각을 나타내는 말
+正答|정답|맞는 답
+答紙|답지|답을 적는 종이
+海路|해로|바닷길
+道路|도로|사람과 차가 다니는 길
+有利|유리|이로움이 있음
+失手|실수|잘못하는 일
+人口|인구|사람의 수
+問答|문답|묻고 대답함
+同時|동시|같은 때
+外出|외출|밖으로 나감
+本心|본심|원래의 마음
+風力|풍력|바람의 힘
+石油|석유|땅속에서 나오는 기름
+注意|주의|조심하여 마음을 씀
+集合|집합|한곳에 모임
+體力|체력|몸의 힘
+`;
+
+const RAW_IDIOMS = `
+一石二鳥|일석이조|돌 하나로 새 두 마리를 잡음. 한 가지 일로 두 가지 이득을 봄
+十中八九|십중팔구|열 가운데 여덟이나 아홉. 거의 틀림없음
+百發百中|백발백중|쏘는 대로 다 맞힘. 하는 일마다 성공함
+九死一生|구사일생|아홉 번 죽을 뻔하다가 한 번 살아남. 죽을 고비를 넘김
+男女老少|남녀노소|남자와 여자, 늙은이와 젊은이. 모든 사람
+東西南北|동서남북|동쪽·서쪽·남쪽·북쪽. 모든 방향
+山川草木|산천초목|산과 내와 풀과 나무. 자연
+三三五五|삼삼오오|서넛 또는 대여섯이 무리를 지어 다니는 모양
+一心同體|일심동체|한마음 한몸. 서로 뜻이 꼭 맞음
+不老長生|불로장생|늙지 않고 오래 삶
+十人十色|십인십색|열 사람이 열 가지 색. 사람마다 생각이 다름
+人山人海|인산인해|사람이 산과 바다를 이룸. 사람이 매우 많이 모임
+言行一致|언행일치|말과 행동이 같음
+作心三日|작심삼일|결심이 사흘을 못 감
+東問西答|동문서답|동쪽을 묻는데 서쪽을 답함. 엉뚱한 대답
+大同小異|대동소이|크게는 같고 작게는 다름. 거의 비슷함
+一日三秋|일일삼추|하루가 삼 년처럼 길게 느껴짐. 몹시 기다림
+天下第一|천하제일|세상에서 첫째가는 것
+自業自得|자업자득|자기가 한 일의 결과를 자기가 받음
+正正堂堂|정정당당|태도나 방법이 바르고 떳떳함
+初志一貫|초지일관|처음 먹은 뜻을 끝까지 밀고 나감
+有名無實|유명무실|이름만 있고 실속이 없음
+右往左往|우왕좌왕|이리저리 왔다 갔다 하며 갈피를 못 잡음
+自問自答|자문자답|스스로 묻고 스스로 대답함
+溫故知新|온고지신|옛것을 익혀 새것을 앎
+百聞不如一見|백문불여일견|백 번 듣는 것이 한 번 보는 것만 못함
+父母兄弟|부모형제|아버지, 어머니, 형, 아우. 온 가족
+自給自足|자급자족|필요한 것을 스스로 마련함
+日日新|일일신|날마다 새로워짐
+古今東西|고금동서|예와 지금, 동양과 서양. 언제 어디서나
+大韓民國|대한민국|우리나라의 이름
+生年月日|생년월일|태어난 해와 달과 날
+花朝月夕|화조월석|꽃 피는 아침과 달 밝은 저녁. 경치 좋은 때
+`;
+
+/* 기초 다지기: 한자 공부를 시작하기 전에 먼저 익히는 주제별 묶음 */
+const BASICS = [
+  { id: "num", e: "🔢", name: "숫자 일~십", intro: "한자 숫자는 일·이·삼으로 읽어요. 一 二 三은 가로 줄의 개수와 같아서 아주 쉬워요!",
+    items: "一二三四五六七八九十百千萬",
+    tips: ["一 二 三은 줄이 1개, 2개, 3개예요.", "十은 열이에요. 十一 = 열+하나 = 11, 二十 = 둘+열 = 20", "二十五 = 이십오 = 25처럼 이어서 읽어요.", "百 백(100), 千 천(1000), 萬 만(10000)", "예외: 六月은 '유월', 十月은 '시월'로 읽어요."] },
+  { id: "day", e: "📅", name: "요일과 날짜", intro: "요일은 해(日), 달(月), 그리고 불·물·나무·쇠·흙에서 왔어요. 뒤에 '빛날 요(曜)'와 '날 일(日)'을 붙여요.",
+    items: "日月火水木金土年",
+    tips: ["月曜日 월요일 · 火曜日 화요일 · 水曜日 수요일 · 木曜日 목요일", "金曜日 금요일 · 土曜日 토요일 · 日曜日 일요일", "月은 '달'이면서 '월(month)'도 뜻해요. 三月 = 삼월", "年月日 = 연월일 (해·달·날)"] },
+  { id: "dir", e: "🧭", name: "방향과 위치", intro: "동서남북과 위·아래·안·밖을 한자로 읽어 봐요.",
+    items: "東西南北中上下左右內外前後",
+    tips: ["東西南北 = 동서남북", "上下 = 상하(위아래), 左右 = 좌우, 前後 = 전후(앞뒤)", "中 가운데 · 內 안 · 外 바깥"] },
+  { id: "fam", e: "👨‍👩‍👧", name: "가족과 사람", intro: "우리 가족과 주변 사람을 나타내는 한자예요.",
+    items: "人父母兄弟女男子孫祖老少民王",
+    tips: ["父母 = 부모, 兄弟 = 형제, 男女 = 남녀", "男女老少 = 남자·여자·늙은이·젊은이, 모든 사람", "子는 아들, 孫은 손자, 祖는 할아버지"] },
+  { id: "body", e: "🖐️", name: "몸과 마음", intro: "내 몸을 나타내는 한자는 모양을 닮아서 외우기 쉬워요.",
+    items: "口手足目心頭身",
+    tips: ["口는 입 모양, 目은 눈 모양을 닮았어요.", "手足 = 수족(손과 발)", "心身 = 심신(마음과 몸)"] },
+  { id: "nat", e: "⛰️", name: "자연과 계절", intro: "산·내·불·물처럼 자연을 그린 한자는 그림에서 시작되었어요.",
+    items: "山川江海水火木金土天地春夏秋冬",
+    tips: ["山川 = 산천(산과 내)", "天地 = 천지(하늘과 땅)", "春夏秋冬 = 춘하추동(봄·여름·가을·겨울)"] },
+  { id: "size", e: "📏", name: "크기와 반대말", intro: "짝꿍처럼 붙어 다니는 반대말 한자예요.",
+    items: "大小長短多少高弱強",
+    tips: ["大小 = 대소(크고 작음)", "長短 = 장단(길고 짧음)", "多少 = 다소(많고 적음), 強弱 = 강약(강하고 약함)"] },
+];
+</script>
+<script>
+/* 한자 놀이터 - 앱 로직 (순수 정적, 서버 없음. 기록은 이 브라우저의 localStorage에만 저장) */
+"use strict";
+
+/* ---------- 데이터 준비 ---------- */
+const CHARS = [];
+const CHAR_MAP = {};
+for (const lv of Object.keys(RAW_CHARS)) {
+  RAW_CHARS[lv].trim().split("\n").forEach((line) => {
+    const [h, k, s] = line.trim().split(/\s+/);
+    const c = { h, k, s, level: Number(lv), id: h };
+    CHARS.push(c);
+    CHAR_MAP[h] = c;
+  });
+}
+const WORDS = RAW_WORDS.trim().split("\n").map((line) => {
+  const [h, r, m] = line.split("|");
+  const level = Math.max(...[...h].map((ch) => (CHAR_MAP[ch] ? CHAR_MAP[ch].level : 0)));
+  return { h, r, m, level, id: "w:" + h };
+}).filter((w) => w.level > 0);
+const IDIOMS = RAW_IDIOMS.trim().split("\n").map((line) => {
+  const [h, r, m] = line.split("|");
+  return { h, r, m, id: "i:" + h };
+});
+const charLabel = (c) => `${c.k} ${c.s}`;
+const LEVEL_NAME = (n) => (LEVELS.find((l) => l.id === n) || {}).name;
+
+/* ---------- 저장소 ---------- */
+const KEY = "hanja-basic-v1";
+let S = { known: {}, wrong: {}, stats: {}, points: 0, days: [], best: {} };
+try { S = Object.assign(S, JSON.parse(localStorage.getItem(KEY) || "{}")); } catch (e) { /* 저장 불가 환경은 무시 */ }
+function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) { /* 무시 */ } }
+function today() { const d = new Date(); return `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`; }
+function touchDay() { if (!S.days.includes(today())) { S.days.push(today()); save(); } }
+function streak() {
+  let n = 0; const d = new Date();
+  for (;;) {
+    const k = `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
+    if (S.days.includes(k)) { n++; d.setDate(d.getDate() - 1); } else if (n === 0) { d.setDate(d.getDate() - 1); if (!S.days.includes(`${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`)) break; } else break;
+  }
+  return n;
+}
+const TITLES = [[0, "한자 새싹", "🌱"], [100, "한자 꿈나무", "🌿"], [300, "한자 탐험가", "🧭"], [600, "한자 달인", "🥋"], [1000, "한자 박사", "🎓"]];
+function title() { let t = TITLES[0]; TITLES.forEach((x) => { if (S.points >= x[0]) t = x; }); return t; }
+function addPoints(n) { S.points += n; save(); }
+
+/* ---------- 유틸 ---------- */
+const $ = (s, r = document) => r.querySelector(s);
+const shuffle = (a) => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+function speak(t) { try { speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(t); u.lang = "ko-KR"; u.rate = 0.85; speechSynthesis.speak(u); } catch (e) { /* 지원 안 함 */ } }
+function toast(msg) { const t = document.createElement("div"); t.className = "toast"; t.textContent = msg; document.body.appendChild(t); setTimeout(() => t.remove(), 1800); }
+function confetti() {
+  const em = ["🎉", "⭐", "✨", "🌟", "🎊"];
+  for (let i = 0; i < 28; i++) {
+    const s = document.createElement("span"); s.className = "confetti"; s.textContent = em[i % em.length];
+    s.style.left = Math.random() * 100 + "vw"; s.style.animationDelay = Math.random() * 0.6 + "s"; s.style.fontSize = 18 + Math.random() * 18 + "px";
+    document.body.appendChild(s); setTimeout(() => s.remove(), 3200);
+  }
+}
+const knownCount = (lv) => CHARS.filter((c) => (!lv || c.level === lv) && S.known[c.id]).length;
+const totalCount = (lv) => CHARS.filter((c) => !lv || c.level === lv).length;
+function ring(pct, size = 120, label = "") {
+  const r = size / 2 - 10, c = 2 * Math.PI * r;
+  return `<svg class="ring" width="${size}" height="${size}" viewBox="0 0 ${size} ${size}"><circle cx="${size / 2}" cy="${size / 2}" r="${r}" class="ring-bg"/><circle cx="${size / 2}" cy="${size / 2}" r="${r}" class="ring-fg" stroke-dasharray="${c}" stroke-dashoffset="${c * (1 - pct)}" transform="rotate(-90 ${size / 2} ${size / 2})"/><text x="50%" y="50%" text-anchor="middle" dominant-baseline="central" class="ring-t">${label}</text></svg>`;
+}
+const wordsOf = (ch) => WORDS.filter((w) => w.h.includes(ch));
+
+/* ---------- 라우터 ---------- */
+const app = $("#app");
+let route = "home", arg = null;
+function go(r) { location.hash = "#/" + r; }
+function parseHash() { const p = location.hash.replace(/^#\//, "").split("/"); route = p[0] || "home"; arg = p[1] || null; }
+function render() {
+  parseHash(); touchDay(); closeModal();
+  document.querySelectorAll("[data-nav]").forEach((a) => a.classList.toggle("on", a.dataset.nav === route || (route === "cards" && a.dataset.nav === "learn") || (route === "play" && a.dataset.nav === "quiz")));
+  const v = { basic: viewBasic, home: viewHome, learn: viewLearn, cards: viewCards, words: viewWords, idioms: viewIdioms, quiz: viewQuizMenu, play: viewPlay, match: viewMatch, me: viewMe }[route] || viewHome;
+  app.innerHTML = v();
+  window.scrollTo(0, 0);
+  if (route === "match") matchInit();
+}
+window.addEventListener("hashchange", render);
+
+/* ---------- 홈 ---------- */
+function viewHome() {
+  const k = knownCount(), t = totalCount();
+  const day = Math.floor(Date.now() / 86400000);
+  const dc = CHARS[(day * 7) % CHARS.length];
+  const ti = title();
+  return `
+  <section class="hero card">
+    <div class="hero-l">
+      <p class="eyebrow">${ti[2]} ${ti[1]} · ${S.points}점 · 🔥 ${streak()}일 연속</p>
+      <h1>오늘도 한자 한 글자,<br>재미있게 시작해요!</h1>
+      <div class="row"><button class="btn primary" data-act="go" data-to="quiz/auto">⚡ 오늘의 퀴즈</button><button class="btn" data-act="go" data-to="cards/${nextLevel()}">🃏 카드로 배우기</button></div>
+    </div>
+    <div class="hero-r">${ring(t ? k / t : 0, 130, `${k}/${t}`)}<small>외운 한자</small></div>
+  </section>
+  <button class="card start" data-act="go" data-to="basic"><span class="lvl-e">🌱</span><span><b>처음이라면 여기부터! 기초 다지기</b><br><span class="tiny">숫자 일~십, 월~일 요일, 방향, 가족… 쉬운 한자부터 가볍게</span></span><span class="arrow">▶</span></button>
+  <section class="grid2">
+    <div class="card daily" data-act="open" data-ch="${dc.h}">
+      <p class="eyebrow">오늘의 한자</p>
+      <div class="big-h">${dc.h}</div>
+      <p class="kor">${charLabel(dc)}</p>
+      <p class="tiny">눌러서 자세히 보기</p>
+    </div>
+    <div class="card">
+      <p class="eyebrow">바로 놀기</p>
+      <div class="stack">
+        <button class="btn wide" data-act="go" data-to="match">🧩 짝 맞추기 게임</button>
+        <button class="btn wide" data-act="go" data-to="words">📖 한자 단어 읽기</button>
+        <button class="btn wide" data-act="go" data-to="idioms">🏮 사자성어 배우기</button>
+      </div>
+    </div>
+  </section>
+  <h2 class="sec">단계별 학습</h2>
+  <section class="grid3">
+    ${LEVELS.map((l) => { const kk = knownCount(l.id), tt = totalCount(l.id); return `
+    <button class="card lvl" data-act="go" data-to="learn/${l.id}">
+      <span class="lvl-e">${l.emoji}</span><b>${l.name}</b><span class="tiny">${l.sub}</span>
+      <div class="bar"><i style="width:${(kk / tt) * 100}%"></i></div><span class="tiny">${kk} / ${tt}자</span>
+    </button>`; }).join("")}
+  </section>
+  <p class="notice">🔒 고객 정보·개인정보·비밀번호는 입력하지 마세요. 학습 기록은 이 브라우저에만 저장돼요.</p>`;
+}
+function nextLevel() { for (const l of LEVELS) if (knownCount(l.id) < totalCount(l.id)) return l.id; return 1; }
+
+/* ---------- 한자 배우기 ---------- */
+function chips(cur, base, withAll = true) {
+  return `<div class="chips">${withAll ? `<button class="chip ${cur === "all" ? "on" : ""}" data-act="go" data-to="${base}/all">전체</button>` : ""}${LEVELS.map((l) => `<button class="chip ${String(cur) === String(l.id) ? "on" : ""}" data-act="go" data-to="${base}/${l.id}">${l.emoji} ${l.name}</button>`).join("")}</div>`;
+}
+function viewLearn() {
+  const cur = arg || "all";
+  const list = CHARS.filter((c) => cur === "all" || c.level === Number(cur));
+  return `
+  <div class="head"><h1>한자 배우기</h1><p>글자를 눌러 훈과 음, 그 한자가 들어간 단어를 확인해요. 외웠으면 ✓ 표시!</p></div>
+  ${chips(cur, "learn")}
+  <div class="row between"><span class="tiny">${list.filter((c) => S.known[c.id]).length} / ${list.length}자 외움</span>${cur !== "all" ? `<button class="btn small primary" data-act="go" data-to="cards/${cur}">🃏 이 단계 카드 학습</button>` : ""}</div>
+  <div class="tiles">${list.map((c) => `<button class="tile ${S.known[c.id] ? "known" : ""}" data-act="open" data-ch="${c.h}"><span class="th">${c.h}</span><span class="tk">${c.k}</span><span class="ts">${c.s}</span></button>`).join("")}</div>`;
+}
+let modalList = [], modalIdx = 0;
+function openModal(ch) {
+  const scope = $(".tiles") ? [...document.querySelectorAll(".tile")].map((t) => t.querySelector(".th").textContent) : [ch];
+  modalList = scope.length ? scope : [ch]; modalIdx = Math.max(0, modalList.indexOf(ch));
+  drawModal();
+}
+function drawModal() {
+  const c = CHAR_MAP[modalList[modalIdx]]; const ws = wordsOf(c.h);
+  let m = $("#modal"); if (!m) { m = document.createElement("div"); m.id = "modal"; document.body.appendChild(m); }
+  m.innerHTML = `<div class="scrim" data-act="close"></div><div class="sheet card">
+    <button class="x" data-act="close" aria-label="닫기">✕</button>
+    <p class="eyebrow">${LEVEL_NAME(c.level)} · ${modalIdx + 1}/${modalList.length}</p>
+    <div class="big-h">${c.h}</div>
+    <p class="kor">${charLabel(c)}</p>
+    <div class="row center"><button class="btn small" data-act="say" data-t="${c.k} ${c.s.replace(/\(.*\)/, "")}">🔊 듣기</button>
+    <button class="btn small ${S.known[c.id] ? "ok" : "primary"}" data-act="know" data-ch="${c.h}">${S.known[c.id] ? "✓ 외웠어요" : "외웠어요!"}</button></div>
+    <h3>이 한자가 들어간 단어</h3>
+    <div class="wlist">${ws.length ? ws.slice(0, 8).map((w) => `<div class="w"><b>${w.h}</b><span>${w.r}</span><em>${w.m}</em></div>`).join("") : '<p class="tiny">아직 등록된 단어가 없어요.</p>'}</div>
+    <div class="row between"><button class="btn small" data-act="mprev">◀ 이전</button><button class="btn small" data-act="mnext">다음 ▶</button></div>
+  </div>`;
+}
+function closeModal() { const m = $("#modal"); if (m) m.remove(); }
+function toggleKnow(ch) {
+  if (S.known[ch]) delete S.known[ch]; else { S.known[ch] = true; addPoints(5); }
+  save();
+}
+
+/* ---------- 카드 학습 ---------- */
+let deck = null;
+function viewCards() {
+  const lv = Number(arg) || 1;
+  if (!deck || deck.lv !== lv) {
+    const list = CHARS.filter((c) => c.level === lv);
+    const first = list.filter((c) => !S.known[c.id]);
+    deck = { lv, queue: shuffle(first.length ? first : list), flipped: false, done: 0, total: first.length || list.length };
+  }
+  const c = deck.queue[0];
+  if (!c) { const d = deck; deck = null; return `<div class="card center-box"><div class="big-e">🎉</div><h2>${LEVEL_NAME(d.lv)} 카드 학습 끝!</h2><p>${d.total}장을 모두 확인했어요.</p><div class="row center"><button class="btn primary" data-act="go" data-to="quiz/auto">퀴즈 풀러 가기</button><button class="btn" data-act="go" data-to="learn/${d.lv}">목록 보기</button></div></div>`; }
+  const ws = wordsOf(c.h).slice(0, 3);
+  return `
+  <div class="head"><h1>카드 학습 <small>${LEVEL_NAME(lv)}</small></h1></div>
+  ${chips(lv, "cards", false)}
+  <div class="bar big"><i style="width:${(deck.done / deck.total) * 100}%"></i></div>
+  <div class="flash ${deck.flipped ? "flip" : ""}" data-act="flip">
+    <div class="face front"><div class="big-h xl">${c.h}</div><p class="tiny">눌러서 뒤집기</p></div>
+    <div class="face back"><p class="kor xl">${charLabel(c)}</p>${ws.map((w) => `<div class="w"><b>${w.h}</b><span>${w.r}</span></div>`).join("")}</div>
+  </div>
+  <div class="row center">
+    <button class="btn" data-act="again">🔁 다시 볼래요</button>
+    <button class="btn" data-act="say" data-t="${c.k} ${c.s.replace(/\(.*\)/, "")}">🔊</button>
+    <button class="btn primary" data-act="got">✓ 알았어요</button>
+  </div>`;
+}
+
+/* ---------- 단어 · 사자성어 ---------- */
+let hideMean = false;
+function viewWords() {
+  const cur = arg || "all";
+  const list = WORDS.filter((w) => cur === "all" || w.level === Number(cur));
+  return `
+  <div class="head"><h1>한자 단어</h1><p>한자로 쓴 단어를 읽어 봐요. 가리기를 켜고 눌러서 정답을 확인해요. (${WORDS.length}개)</p></div>
+  ${chips(cur, "words")}
+  <label class="switch"><input type="checkbox" ${hideMean ? "checked" : ""} data-act="hide"> 독음·뜻 가리기</label>
+  <div class="list">${list.map((w) => `<div class="item ${hideMean ? "hidden" : ""}" data-act="reveal"><div class="big-w">${w.h}</div><div class="info"><b>${w.r}</b><span>${w.m}</span></div><button class="icon" data-act="say" data-t="${w.r}" aria-label="듣기">🔊</button></div>`).join("")}</div>`;
+}
+function viewIdioms() {
+  return `
+  <div class="head"><h1>사자성어</h1><p>네 글자에 담긴 옛 지혜. 눌러서 뜻을 확인해요. (${IDIOMS.length}개)</p></div>
+  <label class="switch"><input type="checkbox" ${hideMean ? "checked" : ""} data-act="hide"> 독음·뜻 가리기</label>
+  <div class="list">${IDIOMS.map((w) => `<div class="item idiom ${hideMean ? "hidden" : ""}" data-act="reveal"><div class="big-w">${w.h}</div><div class="info"><b>${w.r}</b><span>${w.m}</span></div><button class="icon" data-act="say" data-t="${w.r}" aria-label="듣기">🔊</button></div>`).join("")}</div>`;
+}
+
+/* ---------- 퀴즈 ---------- */
+const MODES = [
+  { id: "hun", e: "🔤", name: "훈음 맞히기", d: "한자를 보고 훈과 음 고르기" },
+  { id: "char", e: "🔍", name: "한자 찾기", d: "훈과 음을 보고 한자 고르기" },
+  { id: "read", e: "📣", name: "단어 읽기", d: "한자 단어의 독음 고르기" },
+  { id: "word", e: "🧠", name: "단어 뜻 찾기", d: "뜻을 보고 한자 단어 고르기" },
+  { id: "idiom", e: "🏮", name: "사자성어", d: "뜻을 보고 사자성어 고르기" },
+];
+let QS = { mode: "hun", scope: "all" };
+function viewQuizMenu() {
+  if (arg === "auto") { QS.mode = "hun"; QS.scope = String(nextLevel()); startQuiz(); return ""; }
+  return `
+  <div class="head"><h1>퀴즈</h1><p>종류와 범위를 고르고 시작! 10문제를 풀면 별을 받아요.</p></div>
+  <h2 class="sec">종류</h2>
+  <div class="grid3">${MODES.map((m) => `<button class="card pick ${QS.mode === m.id ? "on" : ""}" data-act="mode" data-v="${m.id}"><span class="lvl-e">${m.e}</span><b>${m.name}</b><span class="tiny">${m.d}</span></button>`).join("")}</div>
+  <h2 class="sec">범위</h2>
+  <div class="chips"><button class="chip ${QS.scope === "all" ? "on" : ""}" data-act="scope" data-v="all">전체</button>${LEVELS.map((l) => `<button class="chip ${QS.scope === String(l.id) ? "on" : ""}" data-act="scope" data-v="${l.id}">${l.emoji} ${l.name}</button>`).join("")}<button class="chip ${QS.scope === "wrong" ? "on" : ""}" data-act="scope" data-v="wrong">📝 오답 노트 (${Object.keys(S.wrong).length})</button></div>
+  <div class="row center sp"><button class="btn primary big" data-act="start">▶ 시작하기</button></div>
+  <h2 class="sec">최고 기록</h2>
+  <div class="tiny">${MODES.map((m) => `${m.e} ${m.name}: ${"★".repeat(S.best[m.id] || 0) || "-"}`).join(" &nbsp;·&nbsp; ")}</div>`;
+}
+let Q = null;
+function poolFor(mode, scope) {
+  const base = mode === "hun" || mode === "char" ? CHARS : mode === "idiom" ? IDIOMS : WORDS;
+  let p = base;
+  if (String(scope).startsWith("set:")) { const b = BASICS.find((x) => x.id === scope.slice(4)); p = base.filter((x) => b && b.items.includes(x.h)); }
+  else if (scope === "wrong") p = base.filter((x) => S.wrong[x.id]);
+  else if (scope !== "all" && mode !== "idiom") p = base.filter((x) => x.level === Number(scope));
+  return { base, pool: p };
+}
+const qKey = { hun: (x) => charLabel(x), char: (x) => x.h, read: (x) => x.r, word: (x) => x.h, idiom: (x) => x.h };
+function startQuiz() {
+  const { base, pool } = poolFor(QS.mode, QS.scope);
+  if (pool.length < 1) { toast("이 범위에는 문제가 아직 없어요"); go("quiz"); return; }
+  const items = shuffle(pool).slice(0, 10);
+  Q = { mode: QS.mode, scope: QS.scope, i: 0, score: 0, answered: false, wrongs: [], base,
+    list: items.map((it) => {
+      const key = qKey[QS.mode];
+      let opts = [it];
+      for (const o of shuffle(base)) { if (opts.length >= 4) break; if (!opts.some((p) => key(p) === key(o))) opts.push(o); }
+      return { it, opts: shuffle(opts) };
+    }) };
+  location.hash = "#/play";
+  if (route === "play") render();
+}
+function viewPlay() {
+  if (!Q) return viewQuizMenu();
+  if (Q.i >= Q.list.length) return viewResult();
+  const { it, opts } = Q.list[Q.i]; const m = Q.mode;
+  let prompt = "", cls = "";
+  if (m === "hun") prompt = `<div class="big-h">${it.h}</div><p class="ask">이 한자의 훈과 음은?</p>`;
+  if (m === "char") { prompt = `<p class="kor xl">${charLabel(it)}</p><p class="ask">알맞은 한자를 고르세요</p>`; cls = "hanja-opt"; }
+  if (m === "read") prompt = `<div class="big-w xl">${it.h}</div><p class="ask">알맞은 독음은?</p>`;
+  if (m === "word") { prompt = `<p class="mean">${it.m}</p><p class="ask">이 뜻에 맞는 한자 단어는?</p>`; cls = "hanja-opt"; }
+  if (m === "idiom") { prompt = `<p class="mean">${it.m}</p><p class="ask">이 뜻에 맞는 사자성어는?</p>`; cls = "hanja-opt idiom-opt"; }
+  const label = (o) => (m === "hun" ? charLabel(o) : m === "char" ? o.h : m === "read" ? o.r : m === "word" ? o.h : `${o.h}<small>${o.r}</small>`);
+  return `
+  <div class="row between"><button class="btn small" data-act="go" data-to="quiz">✕ 그만하기</button><span class="tiny">${Q.i + 1} / ${Q.list.length} · ⭕ ${Q.score}</span></div>
+  <div class="bar big"><i style="width:${(Q.i / Q.list.length) * 100}%"></i></div>
+  <div class="card qcard">${prompt}</div>
+  <div class="opts ${cls}">${opts.map((o, i) => `<button class="opt" data-act="ans" data-i="${i}">${label(o)}</button>`).join("")}</div>
+  <div id="fb"></div>`;
+}
+function answer(i) {
+  if (Q.answered) return; Q.answered = true;
+  const { it, opts } = Q.list[Q.i]; const picked = opts[i]; const ok = picked.id === it.id;
+  document.querySelectorAll(".opt").forEach((b, idx) => { b.disabled = true; if (opts[idx].id === it.id) b.classList.add("right"); else if (idx === i) b.classList.add("bad"); });
+  const st = (S.stats[it.id] = S.stats[it.id] || { r: 0, w: 0 });
+  if (ok) { Q.score++; st.r++; delete S.wrong[it.id]; addPoints(10); } else { st.w++; S.wrong[it.id] = true; Q.wrongs.push(it); }
+  save();
+  const ans = Q.mode === "hun" ? `${it.h} = ${charLabel(it)}` : Q.mode === "char" ? `${charLabel(it)} = ${it.h}` : `${it.h} (${it.r}) ${Q.mode === "read" ? "- " + it.m : ""}`;
+  $("#fb").innerHTML = `<div class="fb ${ok ? "good" : "no"}"><b>${ok ? "🎉 정답이에요!" : "😅 아쉬워요"}</b><span>${ans}</span><button class="btn primary" data-act="next">${Q.i + 1 >= Q.list.length ? "결과 보기" : "다음 ▶"}</button></div>`;
+  if (ok) setTimeout(() => { if (Q && Q.answered && Q.list[Q.i].it.id === it.id) nextQ(); }, 1100);
+}
+function nextQ() { if (!Q || !Q.answered) return; Q.i++; Q.answered = false; render(); }
+function viewResult() {
+  const pct = Q.score / Q.list.length; const stars = pct >= 0.9 ? 3 : pct >= 0.6 ? 2 : 1;
+  if (!Q.saved) { Q.saved = true; S.best[Q.mode] = Math.max(S.best[Q.mode] || 0, stars); addPoints(stars * 5); if (pct >= 0.8) setTimeout(confetti, 200); }
+  const msg = pct >= 0.9 ? "완벽해요! 한자 박사!" : pct >= 0.6 ? "잘했어요! 조금만 더!" : "괜찮아요, 다시 하면 늘어요!";
+  return `<div class="card center-box"><div class="stars">${"★".repeat(stars)}<span>${"★".repeat(3 - stars)}</span></div><h2>${Q.score} / ${Q.list.length} 정답</h2><p>${msg}</p>
+  ${Q.wrongs.length ? `<div class="wrongs"><b>틀린 문제</b>${Q.wrongs.map((w) => `<div class="w"><b>${w.h}</b><span>${w.r || charLabel(w)}</span>${w.m ? `<em>${w.m}</em>` : ""}</div>`).join("")}</div>` : ""}
+  <div class="row center"><button class="btn primary" data-act="start">🔁 한 번 더</button><button class="btn" data-act="go" data-to="quiz">다른 퀴즈</button><button class="btn" data-act="go" data-to="home">홈</button></div></div>`;
+}
+
+/* ---------- 짝 맞추기 ---------- */
+let M = null;
+function viewMatch() {
+  return `
+  <div class="head"><h1>짝 맞추기</h1><p>한자와 훈음을 짝지어 모두 없애 보세요!</p></div>
+  <div class="chips">${["all", ...LEVELS.map((l) => String(l.id))].map((v) => `<button class="chip ${(M && M.scope) === v || (!M && v === "all") ? "on" : ""}" data-act="mscope" data-v="${v}">${v === "all" ? "전체" : LEVELS[v - 1].emoji + " " + LEVEL_NAME(Number(v))}</button>`).join("")}</div>
+  <div class="row between"><span class="tiny" id="mi">시도 0번</span><button class="btn small" data-act="mnew">🔄 새로 시작</button></div>
+  <div class="mgrid" id="mg"></div>`;
+}
+function matchInit(scope) {
+  const sc = scope || (M && M.scope) || "all";
+  const pool = CHARS.filter((c) => sc === "all" || c.level === Number(sc));
+  const pick = shuffle(pool).slice(0, 6);
+  const tiles = shuffle(pick.flatMap((c) => [{ id: c.id, t: "h", txt: c.h }, { id: c.id, t: "k", txt: charLabel(c) }]));
+  M = { scope: sc, tiles, sel: null, tries: 0, left: 6, lock: false };
+  $("#mg").innerHTML = tiles.map((t, i) => `<button class="mt ${t.t}" data-act="mt" data-i="${i}">${t.txt}</button>`).join("");
+  document.querySelectorAll("[data-act=mscope]").forEach((b) => b.classList.toggle("on", b.dataset.v === sc));
+  $("#mi").textContent = "시도 0번";
+}
+function matchTap(i) {
+  if (!M || M.lock) return; const btn = $(`.mt[data-i="${i}"]`); if (btn.classList.contains("gone") || M.sel === i) return;
+  if (M.sel === null) { M.sel = i; btn.classList.add("sel"); return; }
+  const a = M.tiles[M.sel], b = M.tiles[i]; const ba = $(`.mt[data-i="${M.sel}"]`);
+  M.tries++; $("#mi").textContent = `시도 ${M.tries}번`;
+  if (a.id === b.id && a.t !== b.t) {
+    ba.classList.replace("sel", "gone"); btn.classList.add("gone"); M.sel = null; M.left--;
+    if (M.left === 0) { addPoints(30); confetti(); setTimeout(() => toast(`🎉 ${M.tries}번 만에 성공! +30점`), 300); }
+  } else {
+    btn.classList.add("shake"); ba.classList.add("shake"); M.lock = true;
+    const s = M.sel; M.sel = null;
+    setTimeout(() => { btn.classList.remove("shake"); ba.classList.remove("shake", "sel"); M.lock = false; void s; }, 600);
+  }
+}
+
+/* ---------- 기초 다지기 ---------- */
+const DIG = "〇一二三四五六七八九", KR = ["영", "일", "이", "삼", "사", "오", "육", "칠", "팔", "구"];
+function numH(n) { if (n < 10) return DIG[n]; const t = Math.floor(n / 10), u = n % 10; return (t > 1 ? DIG[t] : "") + "十" + (u ? DIG[u] : ""); }
+function numR(n) { if (n < 10) return KR[n]; const t = Math.floor(n / 10), u = n % 10; return (t > 1 ? KR[t] : "") + "십" + (u ? KR[u] : ""); }
+const monthR = (m) => (m === 6 ? "유월" : m === 10 ? "시월" : numR(m) + "월");
+const DAYS = [["日", "일", "해"], ["月", "월", "달"], ["火", "화", "불"], ["水", "수", "물"], ["木", "목", "나무"], ["金", "금", "쇠"], ["土", "토", "흙"]];
+function numWidget() {
+  return `<div class="card widget"><h3>🔢 숫자 만들기</h3><p class="tiny">막대를 움직여 1~99를 한자로 바꿔 봐요.</p>
+  <input type="range" min="1" max="99" value="23" data-act="numin" aria-label="숫자 고르기">
+  <div id="numout">${numOut(23)}</div></div>
+  <div class="card widget"><h3>🗓️ 달 읽기</h3><p class="tiny">달을 눌러 보세요. (6월·10월은 읽는 법이 달라요)</p>
+  <div class="chips">${Array.from({ length: 12 }, (_, i) => `<button class="chip" data-act="month" data-m="${i + 1}">${i + 1}월</button>`).join("")}</div>
+  <div id="monthout" class="wout"><span class="tiny">달을 골라 보세요</span></div></div>`;
+}
+function numOut(n) { return `<div class="wout"><span class="num">${n}</span><span class="eq">=</span><span class="big-w">${numH(n)}</span><b>${numR(n)}</b></div>`; }
+function dayWidget() {
+  const now = new Date(), wd = now.getDay();
+  return `<div class="card widget"><h3>📅 요일 표</h3><div class="week">${["月", "火", "水", "木", "金", "土", "日"].map((c) => { const d = DAYS.find((x) => x[0] === c); return `<button class="wd ${DAYS[wd][0] === c ? "today" : ""}" data-act="say" data-t="${d[1]}요일"><span class="hj">${c}</span><b>${d[1]}요일</b><small>${d[2]}</small></button>`; }).join("")}</div>
+  <p class="todayline">오늘은 <b>${numH(now.getMonth() + 1)}月 ${numH(now.getDate())}日 ${DAYS[wd][0]}曜日</b> (${monthR(now.getMonth() + 1)} ${numR(now.getDate())}일 ${DAYS[wd][1]}요일)</p></div>`;
+}
+function viewBasic() {
+  const b = BASICS.find((x) => x.id === arg);
+  if (!b) return `
+  <div class="head"><h1>기초 다지기 🌱</h1><p>본격적으로 한자를 배우기 전에, 일상에서 자주 만나는 한자부터 가볍게 익혀요. 숫자와 요일부터 시작!</p></div>
+  <div class="grid3">${BASICS.map((x) => `<button class="card lvl" data-act="go" data-to="basic/${x.id}"><span class="lvl-e">${x.e}</span><b>${x.name}</b><span class="tiny">${[...x.items].slice(0, 9).join(" ")}${x.items.length > 9 ? " …" : ""}</span><div class="bar"><i style="width:${([...x.items].filter((c) => S.known[c]).length / [...x.items].length) * 100}%"></i></div></button>`).join("")}</div>`;
+  const i = BASICS.indexOf(b);
+  return `
+  <div class="head"><button class="btn small" data-act="go" data-to="basic">◀ 기초 목록</button><h1 style="margin-top:12px">${b.e} ${b.name}</h1><p>${b.intro}</p></div>
+  <div class="tiles">${[...b.items].map((ch) => { const c = CHAR_MAP[ch]; return `<button class="tile ${S.known[c.id] ? "known" : ""}" data-act="open" data-ch="${c.h}"><span class="th">${c.h}</span><span class="tk">${c.k}</span><span class="ts">${c.s}</span></button>`; }).join("")}</div>
+  ${b.id === "num" ? numWidget() : ""}${b.id === "day" ? dayWidget() : ""}
+  <div class="card"><h3>💡 알아 두기</h3><ul class="tips">${b.tips.map((t) => `<li>${t}</li>`).join("")}</ul></div>
+  <div class="row center"><button class="btn primary big" data-act="setquiz" data-id="${b.id}">⚡ 이 주제 퀴즈 풀기</button></div>
+  <div class="row between">${i > 0 ? `<button class="btn small" data-act="go" data-to="basic/${BASICS[i - 1].id}">◀ ${BASICS[i - 1].name}</button>` : "<span></span>"}${i < BASICS.length - 1 ? `<button class="btn small" data-act="go" data-to="basic/${BASICS[i + 1].id}">${BASICS[i + 1].name} ▶</button>` : "<span></span>"}</div>`;
+}
+
+/* ---------- 내 기록 ---------- */
+function viewMe() {
+  const ti = title(); const nxt = TITLES.find((x) => x[0] > S.points);
+  const wr = CHARS.filter((c) => S.wrong[c.id]);
+  return `
+  <div class="head"><h1>내 기록</h1></div>
+  <section class="grid2">
+    <div class="card"><p class="eyebrow">나의 칭호</p><div class="big-e">${ti[2]}</div><h2>${ti[1]}</h2><p class="tiny">${S.points}점 ${nxt ? `· 다음 칭호까지 ${nxt[0] - S.points}점` : "· 최고 칭호예요!"}</p></div>
+    <div class="card"><p class="eyebrow">학습 현황</p>${LEVELS.map((l) => `<div class="prow"><span>${l.emoji} ${l.name}</span><div class="bar"><i style="width:${(knownCount(l.id) / totalCount(l.id)) * 100}%"></i></div><span class="tiny">${knownCount(l.id)}/${totalCount(l.id)}</span></div>`).join("")}<p class="tiny">🔥 연속 학습 ${streak()}일 · 총 ${S.days.length}일</p></div>
+  </section>
+  <h2 class="sec">📝 오답 노트</h2>
+  ${wr.length ? `<div class="tiles">${wr.map((c) => `<button class="tile" data-act="open" data-ch="${c.h}"><span class="th">${c.h}</span><span class="tk">${c.k}</span><span class="ts">${c.s}</span></button>`).join("")}</div><div class="row sp"><button class="btn primary" data-act="wrongquiz">오답만 다시 풀기</button></div>` : `<p class="tiny">틀린 한자가 아직 없어요. 퀴즈에 도전해 보세요!</p>`}
+  <h2 class="sec">설정</h2>
+  <button class="btn small danger" data-act="reset">기록 모두 지우기</button>`;
+}
+
+/* ---------- 이벤트 ---------- */
+document.addEventListener("click", (e) => {
+  const el = e.target.closest("[data-act]"); if (!el) return;
+  const a = el.dataset.act;
+  if (a === "go") go(el.dataset.to);
+  else if (a === "open") openModal(el.dataset.ch);
+  else if (a === "close") closeModal();
+  else if (a === "mprev") { modalIdx = (modalIdx - 1 + modalList.length) % modalList.length; drawModal(); }
+  else if (a === "mnext") { modalIdx = (modalIdx + 1) % modalList.length; drawModal(); }
+  else if (a === "say") { e.stopPropagation(); speak(el.dataset.t); }
+  else if (a === "know") { toggleKnow(el.dataset.ch); drawModal(); const t = document.querySelector(`.tile .th`); document.querySelectorAll(".tile").forEach((tl) => tl.classList.toggle("known", !!S.known[tl.querySelector(".th").textContent])); }
+  else if (a === "flip") { deck.flipped = !deck.flipped; $(".flash").classList.toggle("flip", deck.flipped); }
+  else if (a === "again") { deck.queue.push(deck.queue.shift()); deck.flipped = false; render(); }
+  else if (a === "got") { const c = deck.queue.shift(); if (!S.known[c.id]) { S.known[c.id] = true; addPoints(5); save(); } deck.done++; deck.flipped = false; render(); }
+  else if (a === "hide") { hideMean = el.checked; render(); }
+  else if (a === "reveal") { if (e.target.closest("[data-act=say]")) return; el.classList.toggle("hidden"); }
+  else if (a === "mode") { QS.mode = el.dataset.v; render(); }
+  else if (a === "scope") { QS.scope = el.dataset.v; render(); }
+  else if (a === "start") startQuiz();
+  else if (a === "ans") answer(Number(el.dataset.i));
+  else if (a === "next") nextQ();
+  else if (a === "mscope") matchInit(el.dataset.v);
+  else if (a === "mnew") matchInit();
+  else if (a === "mt") matchTap(Number(el.dataset.i));
+  else if (a === "setquiz") { QS.mode = "hun"; QS.scope = "set:" + el.dataset.id; startQuiz(); }
+  else if (a === "month") { const m = Number(el.dataset.m); document.querySelectorAll("[data-act=month]").forEach((c) => c.classList.toggle("on", c === el)); $("#monthout").innerHTML = `<span class="num">${m}월</span><span class="eq">=</span><span class="big-w">${numH(m)}月</span><b>${monthR(m)}</b>`; speak(monthR(m)); }
+  else if (a === "wrongquiz") { QS.mode = "hun"; QS.scope = "wrong"; startQuiz(); }
+  else if (a === "reset") { if (confirm("정말 모든 학습 기록을 지울까요?")) { S = { known: {}, wrong: {}, stats: {}, points: 0, days: [], best: {} }; save(); render(); toast("기록을 지웠어요"); } }
+});
+document.addEventListener("input", (e) => { if (e.target.dataset.act === "numin") $("#numout").innerHTML = numOut(Number(e.target.value)); });
+document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeModal(); });
+if (!location.hash) location.hash = "#/home"; else render();
+</script>
 </body>
 </html>
