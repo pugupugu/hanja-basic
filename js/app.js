@@ -72,7 +72,7 @@ function parseHash() { const p = location.hash.replace(/^#\//, "").split("/"); r
 function render() {
   parseHash(); touchDay(); closeModal();
   document.querySelectorAll("[data-nav]").forEach((a) => a.classList.toggle("on", a.dataset.nav === route || (route === "cards" && a.dataset.nav === "learn") || (route === "play" && a.dataset.nav === "quiz")));
-  const v = { home: viewHome, learn: viewLearn, cards: viewCards, words: viewWords, idioms: viewIdioms, quiz: viewQuizMenu, play: viewPlay, match: viewMatch, me: viewMe }[route] || viewHome;
+  const v = { basic: viewBasic, home: viewHome, learn: viewLearn, cards: viewCards, words: viewWords, idioms: viewIdioms, quiz: viewQuizMenu, play: viewPlay, match: viewMatch, me: viewMe }[route] || viewHome;
   app.innerHTML = v();
   window.scrollTo(0, 0);
   if (route === "match") matchInit();
@@ -94,6 +94,7 @@ function viewHome() {
     </div>
     <div class="hero-r">${ring(t ? k / t : 0, 130, `${k}/${t}`)}<small>외운 한자</small></div>
   </section>
+  <button class="card start" data-act="go" data-to="basic"><span class="lvl-e">🌱</span><span><b>처음이라면 여기부터! 기초 다지기</b><br><span class="tiny">숫자 일~십, 월~일 요일, 방향, 가족… 쉬운 한자부터 가볍게</span></span><span class="arrow">▶</span></button>
   <section class="grid2">
     <div class="card daily" data-act="open" data-ch="${dc.h}">
       <p class="eyebrow">오늘의 한자</p>
@@ -232,7 +233,8 @@ let Q = null;
 function poolFor(mode, scope) {
   const base = mode === "hun" || mode === "char" ? CHARS : mode === "idiom" ? IDIOMS : WORDS;
   let p = base;
-  if (scope === "wrong") p = base.filter((x) => S.wrong[x.id]);
+  if (String(scope).startsWith("set:")) { const b = BASICS.find((x) => x.id === scope.slice(4)); p = base.filter((x) => b && b.items.includes(x.h)); }
+  else if (scope === "wrong") p = base.filter((x) => S.wrong[x.id]);
   else if (scope !== "all" && mode !== "idiom") p = base.filter((x) => x.level === Number(scope));
   return { base, pool: p };
 }
@@ -324,6 +326,41 @@ function matchTap(i) {
   }
 }
 
+/* ---------- 기초 다지기 ---------- */
+const DIG = "〇一二三四五六七八九", KR = ["영", "일", "이", "삼", "사", "오", "육", "칠", "팔", "구"];
+function numH(n) { if (n < 10) return DIG[n]; const t = Math.floor(n / 10), u = n % 10; return (t > 1 ? DIG[t] : "") + "十" + (u ? DIG[u] : ""); }
+function numR(n) { if (n < 10) return KR[n]; const t = Math.floor(n / 10), u = n % 10; return (t > 1 ? KR[t] : "") + "십" + (u ? KR[u] : ""); }
+const monthR = (m) => (m === 6 ? "유월" : m === 10 ? "시월" : numR(m) + "월");
+const DAYS = [["日", "일", "해"], ["月", "월", "달"], ["火", "화", "불"], ["水", "수", "물"], ["木", "목", "나무"], ["金", "금", "쇠"], ["土", "토", "흙"]];
+function numWidget() {
+  return `<div class="card widget"><h3>🔢 숫자 만들기</h3><p class="tiny">막대를 움직여 1~99를 한자로 바꿔 봐요.</p>
+  <input type="range" min="1" max="99" value="23" data-act="numin" aria-label="숫자 고르기">
+  <div id="numout">${numOut(23)}</div></div>
+  <div class="card widget"><h3>🗓️ 달 읽기</h3><p class="tiny">달을 눌러 보세요. (6월·10월은 읽는 법이 달라요)</p>
+  <div class="chips">${Array.from({ length: 12 }, (_, i) => `<button class="chip" data-act="month" data-m="${i + 1}">${i + 1}월</button>`).join("")}</div>
+  <div id="monthout" class="wout"><span class="tiny">달을 골라 보세요</span></div></div>`;
+}
+function numOut(n) { return `<div class="wout"><span class="num">${n}</span><span class="eq">=</span><span class="big-w">${numH(n)}</span><b>${numR(n)}</b></div>`; }
+function dayWidget() {
+  const now = new Date(), wd = now.getDay();
+  return `<div class="card widget"><h3>📅 요일 표</h3><div class="week">${["月", "火", "水", "木", "金", "土", "日"].map((c) => { const d = DAYS.find((x) => x[0] === c); return `<button class="wd ${DAYS[wd][0] === c ? "today" : ""}" data-act="say" data-t="${d[1]}요일"><span class="hj">${c}</span><b>${d[1]}요일</b><small>${d[2]}</small></button>`; }).join("")}</div>
+  <p class="todayline">오늘은 <b>${numH(now.getMonth() + 1)}月 ${numH(now.getDate())}日 ${DAYS[wd][0]}曜日</b> (${monthR(now.getMonth() + 1)} ${numR(now.getDate())}일 ${DAYS[wd][1]}요일)</p></div>`;
+}
+function viewBasic() {
+  const b = BASICS.find((x) => x.id === arg);
+  if (!b) return `
+  <div class="head"><h1>기초 다지기 🌱</h1><p>본격적으로 한자를 배우기 전에, 일상에서 자주 만나는 한자부터 가볍게 익혀요. 숫자와 요일부터 시작!</p></div>
+  <div class="grid3">${BASICS.map((x) => `<button class="card lvl" data-act="go" data-to="basic/${x.id}"><span class="lvl-e">${x.e}</span><b>${x.name}</b><span class="tiny">${[...x.items].slice(0, 9).join(" ")}${x.items.length > 9 ? " …" : ""}</span><div class="bar"><i style="width:${([...x.items].filter((c) => S.known[c]).length / [...x.items].length) * 100}%"></i></div></button>`).join("")}</div>`;
+  const i = BASICS.indexOf(b);
+  return `
+  <div class="head"><button class="btn small" data-act="go" data-to="basic">◀ 기초 목록</button><h1 style="margin-top:12px">${b.e} ${b.name}</h1><p>${b.intro}</p></div>
+  <div class="tiles">${[...b.items].map((ch) => { const c = CHAR_MAP[ch]; return `<button class="tile ${S.known[c.id] ? "known" : ""}" data-act="open" data-ch="${c.h}"><span class="th">${c.h}</span><span class="tk">${c.k}</span><span class="ts">${c.s}</span></button>`; }).join("")}</div>
+  ${b.id === "num" ? numWidget() : ""}${b.id === "day" ? dayWidget() : ""}
+  <div class="card"><h3>💡 알아 두기</h3><ul class="tips">${b.tips.map((t) => `<li>${t}</li>`).join("")}</ul></div>
+  <div class="row center"><button class="btn primary big" data-act="setquiz" data-id="${b.id}">⚡ 이 주제 퀴즈 풀기</button></div>
+  <div class="row between">${i > 0 ? `<button class="btn small" data-act="go" data-to="basic/${BASICS[i - 1].id}">◀ ${BASICS[i - 1].name}</button>` : "<span></span>"}${i < BASICS.length - 1 ? `<button class="btn small" data-act="go" data-to="basic/${BASICS[i + 1].id}">${BASICS[i + 1].name} ▶</button>` : "<span></span>"}</div>`;
+}
+
 /* ---------- 내 기록 ---------- */
 function viewMe() {
   const ti = title(); const nxt = TITLES.find((x) => x[0] > S.points);
@@ -364,8 +401,11 @@ document.addEventListener("click", (e) => {
   else if (a === "mscope") matchInit(el.dataset.v);
   else if (a === "mnew") matchInit();
   else if (a === "mt") matchTap(Number(el.dataset.i));
+  else if (a === "setquiz") { QS.mode = "hun"; QS.scope = "set:" + el.dataset.id; startQuiz(); }
+  else if (a === "month") { const m = Number(el.dataset.m); document.querySelectorAll("[data-act=month]").forEach((c) => c.classList.toggle("on", c === el)); $("#monthout").innerHTML = `<span class="num">${m}월</span><span class="eq">=</span><span class="big-w">${numH(m)}月</span><b>${monthR(m)}</b>`; speak(monthR(m)); }
   else if (a === "wrongquiz") { QS.mode = "hun"; QS.scope = "wrong"; startQuiz(); }
   else if (a === "reset") { if (confirm("정말 모든 학습 기록을 지울까요?")) { S = { known: {}, wrong: {}, stats: {}, points: 0, days: [], best: {} }; save(); render(); toast("기록을 지웠어요"); } }
 });
+document.addEventListener("input", (e) => { if (e.target.dataset.act === "numin") $("#numout").innerHTML = numOut(Number(e.target.value)); });
 document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeModal(); });
 if (!location.hash) location.hash = "#/home"; else render();
